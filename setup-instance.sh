@@ -37,10 +37,9 @@ WantedBy=multi-user.target
 EOT
 
 # App source
-su -c "git clone https://github.com/carlgira/oci-tf-document-qna /home/$USER/oci-tf-document-qna" $USER
-HF_TOKEN=`curl -L http://169.254.169.254/opc/v1/instance/ | jq -r '.metadata."hf_token"'`
-su -c "sed -i 's/HF_TOKEN/$HF_TOKEN/g' /home/$USER/oci-tf-document-qna/app/start-gradio.sh" $USER
-su -c "sed -i 's/HF_TOKEN/$HF_TOKEN/g' /home/$USER/oci-tf-document-qna/app/start-flask.sh" $USER
+su -c "git clone https://github.com/anshoracle/oci-genai-document-qna /home/$USER/oci-genai-document-qna" $USER
+COHERE_TOKEN=`curl -L http://169.254.169.254/opc/v1/instance/ | jq -r '.metadata."cohere_token"'`
+su -c "sed -i 's/COHERE_TOKEN/$COHERE_TOKEN/g' /home/$USER/oci-genai-document-qna/app/start-gradio.sh" $USER
 
 # Gradio web UI
 cat <<EOT >> /etc/systemd/system/gradio.service
@@ -50,23 +49,7 @@ Description=systemd service start gradio
 [Service]
 Environment="python_cmd=python3.11"
 Environment="pip_cmd=pip"
-ExecStart=/bin/bash /home/$USER/oci-tf-document-qna/app/start-gradio.sh
-User=$USER
-Restart=always
-RestartSec=5
-[Install]
-WantedBy=multi-user.target
-EOT
-
-# Flask services
-cat <<EOT >> /etc/systemd/system/flask.service
-[Unit]
-Description=systemd service start flask
-
-[Service]
-Environment="python_cmd=python3.11"
-Environment="pip_cmd=pip"
-ExecStart=/bin/bash /home/$USER/oci-tf-document-qna/app/start-flask.sh
+ExecStart=/bin/bash /home/$USER/oci-genai-document-qna/app/start-gradio.sh
 User=$USER
 Restart=always
 RestartSec=5
@@ -75,13 +58,9 @@ WantedBy=multi-user.target
 EOT
 
 systemctl daemon-reload
-systemctl enable gradio flask opensearch
-systemctl start gradio flask opensearch
+systemctl enable gradio opensearch
+systemctl start gradio opensearch
 
-
-firewall-cmd --zone=public --add-port=3000/tcp --permanent
-firewall-cmd --zone=public --add-port=7860/tcp --permanent
-firewall-cmd --reload
 }
 
 main_function 2>&1 >> /var/log/startup.log

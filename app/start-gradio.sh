@@ -10,13 +10,13 @@ fi
 
 if [[ -z "${LAUNCH_SCRIPT}" ]]
 then
-    LAUNCH_SCRIPT="gradio-opensearch.py"
+    LAUNCH_SCRIPT="app.py"
 fi
 
 # Name of the subdirectory
 if [[ -z "${clone_dir}" ]]
 then
-    clone_dir="oci-tf-document-qna/app"
+    clone_dir="oci-genai-document-qna/app"
 fi
 
 # python3 executable
@@ -127,12 +127,7 @@ printf "\n%s\n" "${delimiter}"
 printf "Launching app.py..."
 printf "\n%s\n" "${delimiter}"
 
-export DOC_CHUNK_SIZE=800
-export DOC_CHUNK_OVERLAP=100
-export DOC_MAX_NEW_TOKENS=200
-export LLM_MAX_NUM_TOKENS=2048
-export HUGGINGFACEHUB_MODEL='vilsonrodrigues/falcon-7b-instruct-sharded'
 export OPENSEARCH_URL='https://admin:admin@localhost:9200'
-export HUGGINGFACEHUB_API_TOKEN='HF_TOKEN'
+export COHERE_API_TOKEN='COHERE_TOKEN'
 
 "${python_cmd}" "${LAUNCH_SCRIPT}"

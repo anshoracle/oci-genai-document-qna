@@ -27,7 +27,7 @@ variable "vcn_cidr" {
   description = ""
 }
 
-variable "hf_token" {
+variable "cohere_token" {
   description = ""
 }
 

@@ -3,11 +3,6 @@ data "oci_core_images" "images" {
   compartment_id = var.compartment_ocid
   operating_system = "Oracle Linux"
   operating_system_version = "8"
-  filter {
-    name = "display_name"
-    values = ["^.*-GPU-.*$"]
-    regex  = true
-  }
 }
 
 # Create a compute instance with a public IP address using oci provider
